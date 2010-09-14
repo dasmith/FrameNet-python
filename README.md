@@ -23,6 +23,16 @@ The first time you instantiate the **FrameNet** class, it will parse *all* of th
 
 # Common Functions
 
-You can look up frames by the **lexical units** (e.g., words) and their parts of speech.
+
+## FrameNet.lookupLexicalUnit(text, part_of_speech)
+
+You can look up frames by the **lexical units** (e.g., words) and their parts of speech.  For example:
+
+    buy = fn.lookupLexicalUnit('buy','v')
+
+## FrameNet.lookupFrame(frame)
+
+    commerce_frame = fn.lookupFrame('Commerce_buy')
+
 
 
