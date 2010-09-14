@@ -16,21 +16,23 @@ Then you can test your installation by running `python test/importer.py` or open
     import framenet
     fn = framenet.FrameNet()
 
-The first time you instantiate the **FrameNet** class, it will parse *all* of the XML files and save pickle objects.   This takes a while, so go have a coffee or celebrate your next birthday.  You should see:
+The first time you instantiate the **FrameNet** class, it will parse *all* of the XML files and save pickle objects.   You should see:
 
     Loading the frames ... Framenet not initialized, doing it now
     Loading xml for frames ...
 
+The first time you do this, this will take a while, so go have a coffee or celebrate your next birthday.  
+
 # Common Functions
 
 
-## FrameNet.lookupLexicalUnit(text, part_of_speech)
+* FrameNet.lookupLexicalUnit(text, part_of_speech)
 
 You can look up frames by the **lexical units** (e.g., words) and their parts of speech.  For example:
 
     buy = fn.lookupLexicalUnit('buy','v')
 
-## FrameNet.lookupFrame(frame)
+* FrameNet.lookupFrame(frame)
 
     commerce_frame = fn.lookupFrame('Commerce_buy')
 
