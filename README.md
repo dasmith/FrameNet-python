@@ -26,13 +26,15 @@ The first time you do this, this will take a while, so go have a coffee or celeb
 # Common Functions
 
 
-* FrameNet.lookupLexicalUnit(text, part_of_speech)
+* `FrameNet.lookupLexicalUnit(text, part_of_speech)`
 
 You can look up frames by the **lexical units** (e.g., words) and their parts of speech.  For example:
 
     buy = fn.lookupLexicalUnit('buy','v')
 
-* FrameNet.lookupFrame(frame)
+* `FrameNet.lookupFrame(frame)`
+
+Also, you can look up [FrameNet frames](http://framenet.icsi.berkeley.edu/index.php?option=com_wrapper&Itemid=113) by their name:
 
     commerce_frame = fn.lookupFrame('Commerce_buy')
 
