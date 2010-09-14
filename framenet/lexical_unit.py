@@ -1,3 +1,8 @@
+import os.path
+import cPickle
+import xml 
+import xml.dom.minidom
+
 from framenet import loadXMLAttributes, getNoneTextChildNodes
 
 class LexicalUnit(dict):
