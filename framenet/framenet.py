@@ -1,8 +1,56 @@
 from settings import *
+
+
+def loadXMLAttributes(d, attributes):
+    for attr in attributes.keys():
+        sattr = str(attr)
+        val = attributes[attr].value
+        try:
+            sval = str(val)
+            if sval.isdigit():
+                d[sattr] = int(sval)
+            else:
+                d[sattr] = sval
+        except:
+            d[sattr] = val
+    return d
+
+def getNoneTextChildNodes(xmlNode):
+    """
+    """
+
+    return filter(lambda x:x.nodeType != x.TEXT_NODE, xmlNode.childNodes)
+
+def testLU(fileName):
+    a = LexicalUnit()
+
+    if False:
+        if not a.loadXML(fileName):
+            print >> sys.stderr, 'loading:', fileName, 'failed'
+        print a
+    else:
+        try:
+            if not a.loadXML(fileName):
+                print >> sys.stderr, 'loading:', fileName, 'failed'
+        except:
+            print >> sys.stderr, 'loading:', fileName, 'failed'
+    return a
+
+
+def initialize():
+     """
+     """
+
+     fn = FrameNet()
+     fn.initialize()
+
+     pass
+
 from lexical_unit import LexicalUnit
 from frame import Frame
 from frame_relation import FrameRelation
 
+     
 class FrameNet(dict):
     """
     This the master class for FrameNet
@@ -55,54 +103,6 @@ class FrameNet(dict):
         pass
 
 
-    @classmethod
-    def loadXMLAttributes(cls, d, attributes):
-        for attr in attributes.keys():
-            sattr = str(attr)
-            val = attributes[attr].value
-            try:
-                sval = str(val)
-                if sval.isdigit():
-                    d[sattr] = int(sval)
-                else:
-                    d[sattr] = sval
-            except:
-                d[sattr] = val
-        return d
-
-    @classmethod
-    def getNoneTextChildNodes(cls, xmlNode):
-        """
-        """
-
-        return filter(lambda x:x.nodeType != x.TEXT_NODE, xmlNode.childNodes)
-
-    @classmethod
-    def testLU(cls, fileName):
-        a = LexicalUnit()
-
-        if False:
-            if not a.loadXML(fileName):
-                print >> sys.stderr, 'loading:', fileName, 'failed'
-            print a
-        else:
-            try:
-                if not a.loadXML(fileName):
-                    print >> sys.stderr, 'loading:', fileName, 'failed'
-            except:
-                print >> sys.stderr, 'loading:', fileName, 'failed'
-        return a
-
-    @classmethod
-    def initialize(cls):
-         """
-         """
-
-         fn = FrameNet()
-         fn.initialize()
-
-         pass
-
     def _generatePickledFrames(self):
         """
         Initialises all the frames
@@ -113,7 +113,7 @@ class FrameNet(dict):
 
         print >> sys.stderr, 'Loading xml for frames ...',
         doc = xml.dom.minidom.parse(framePath)
-        frameNodes = FrameNet.getNoneTextChildNodes(doc.childNodes[1])
+        frameNodes = getNoneTextChildNodes(doc.childNodes[1])
         print >> sys.stderr, 'done',
         
         frames = {}

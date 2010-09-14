@@ -1,3 +1,9 @@
+import os.path
+import cPickle
+import xml 
+import xml.dom.minidom
+
+from framenet import loadXMLAttributes, getNoneTextChildNodes
 
 class FrameRelation(dict):
     """
@@ -20,16 +26,16 @@ class FrameRelation(dict):
 
         doc = xml.dom.minidom.parse(fileName)
 
-        relationTypeNodes = FrameNet.getNoneTextChildNodes(doc.childNodes[1]) #the actual frame-relation-type nodes
+        relationTypeNodes = getNoneTextChildNodes(doc.childNodes[1]) #the actual frame-relation-type nodes
 
         for rtn in relationTypeNodes:
             rt = {} #dictionary for frame-relation-type
-            FrameNet.loadXMLAttributes(rt, rtn.attributes)
-            relationNodes = FrameNet.getNoneTextChildNodes(rtn) #the actual frame-relationS nodes
+            loadXMLAttributes(rt, rtn.attributes)
+            relationNodes = getNoneTextChildNodes(rtn) #the actual frame-relationS nodes
             if len(relationNodes) != 1:
                 print >> sys.stderr, 'Got more than one frame-relations node in type:', rt['name']
                 return False
-            singleRelationNodes = FrameNet.getNoneTextChildNodes(relationNodes[0]) # the actual frame-relation nodes
+            singleRelationNodes = getNoneTextChildNodes(relationNodes[0]) # the actual frame-relation nodes
 
             singleRelations = {}
             i = 0
@@ -52,12 +58,12 @@ class FrameRelation(dict):
 
         frRelation = {}
 
-        FrameNet.loadXMLAttributes(frRelation, relationNode.attributes)
+        loadXMLAttributes(frRelation, relationNode.attributes)
 
-        feNodes = FrameNet.getNoneTextChildNodes(relationNode)
+        feNodes = getNoneTextChildNodes(relationNode)
         for fn in feNodes:
             tmp = {}
-            FrameNet.loadXMLAttributes(tmp, fn.attributes)
+            loadXMLAttributes(tmp, fn.attributes)
             frRelation[tmp['ID']] = tmp
 
         return frRelation

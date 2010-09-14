@@ -1,3 +1,5 @@
+from framenet import loadXMLAttributes, getNoneTextChildNodes
+
 
 class Frame(dict):
     """
@@ -21,8 +23,9 @@ class Frame(dict):
     def loadXMLNode(self, frameNode):
         """
         """
-        FrameNet.loadXMLAttributes(self, frameNode.attributes)
-        goodNodes = FrameNet.getNoneTextChildNodes(frameNode)
+        
+        loadXMLAttributes(self, frameNode.attributes)
+        goodNodes = getNoneTextChildNodes(frameNode)
 
         for node in goodNodes:
             if node.nodeName == 'definition':
@@ -61,7 +64,8 @@ class Frame(dict):
     def loadFrameFes(self, node):
         """
         """
-        feNodes = FrameNet.getNoneTextChildNodes(node)
+        
+        feNodes = getNoneTextChildNodes(node)
 
         fes = {}
 
@@ -80,10 +84,11 @@ class Frame(dict):
     def loadFrameFe(self, feNode):
         """
         """
-        goodNodes = FrameNet.getNoneTextChildNodes(feNode)
+        
+        goodNodes = getNoneTextChildNodes(feNode)
 
         fe = {}
-        fe = FrameNet.loadXMLAttributes(fe, feNode.attributes)
+        fe = loadXMLAttributes(fe, feNode.attributes)
         fe['semtypes'] = {}
 
         for gn in goodNodes:
@@ -97,11 +102,11 @@ class Frame(dict):
                     print >> sys.stderr, 'Error , fe already have a definition:', fe['definition']
                     return None
             elif gn.nodeName == 'semTypes':
-                goodSemTypeNodes = FrameNet.getNoneTextChildNodes(gn)
+                goodSemTypeNodes = getNoneTextChildNodes(gn)
 
                 for gsn in goodSemTypeNodes:
                     semType = {}
-                    FrameNet.loadXMLAttributes(semType, gsn.attributes)
+                    loadXMLAttributes(semType, gsn.attributes)
                     fe['semtypes'][semType['ID']] = semType
             else:
                 print >> sys.stderr, 'In loadFrameFe, found this node:', gn.nodeName
@@ -113,7 +118,8 @@ class Frame(dict):
     def loadFrameLexunits(self, node):
         """
         """
-        goodNodes = FrameNet.getNoneTextChildNodes(node)
+        
+        goodNodes = getNoneTextChildNodes(node)
 
         i = 0
         for gn in goodNodes:
@@ -135,9 +141,9 @@ class Frame(dict):
 
         lexunit = {}
 
-        FrameNet.loadXMLAttributes(lexunit, lexunitNode.attributes)
+        loadXMLAttributes(lexunit, lexunitNode.attributes)
 
-        goodNodes = FrameNet.getNoneTextChildNodes(lexunitNode)
+        goodNodes = getNoneTextChildNodes(lexunitNode)
 
         for gn in goodNodes:
             if gn.nodeName == 'definition':
@@ -146,7 +152,7 @@ class Frame(dict):
                 except:
                     lexunit['definition'] = None
             elif gn.nodeName == 'annotation':
-                annoNodes = FrameNet.getNoneTextChildNodes(gn)
+                annoNodes = getNoneTextChildNodes(gn)
                 anno = {}
                 for an in annoNodes:
                     try:
@@ -161,19 +167,19 @@ class Frame(dict):
                         print >> sys.stderr, 'Warning!! unable to retrieve', an.nodeName, 'for annotation'
                 lexunit['annotation'] = anno
             elif gn.nodeName == 'lexemes':
-                goodSemTypeNodes = FrameNet.getNoneTextChildNodes(gn)
+                goodSemTypeNodes = getNoneTextChildNodes(gn)
                 lexemes = {}
                 for gsn in goodSemTypeNodes:
                     lexeme = {}
-                    FrameNet.loadXMLAttributes(lexeme, gsn.attributes)
+                    loadXMLAttributes(lexeme, gsn.attributes)
                     lexemes[lexeme['ID']] = lexeme
                 lexunit['lexeme'] = lexemes
             elif gn.nodeName == 'semTypes':
-                goodSemTypeNodes = FrameNet.getNoneTextChildNodes(gn)
+                goodSemTypeNodes = getNoneTextChildNodes(gn)
                 semTypes = {}
                 for gsn in goodSemTypeNodes:
                     semType = {}
-                    FrameNet.loadXMLAttributes(semType, gsn.attributes)
+                    loadXMLAttributes(semType, gsn.attributes)
                     semTypes[semType['ID']] = semType
                 lexunit['semtypes'] = semTypes
             else:
@@ -186,12 +192,12 @@ class Frame(dict):
         """
         """
                     
-        goodSemTypeNodes = FrameNet.getNoneTextChildNodes(node)
+        goodSemTypeNodes = getNoneTextChildNodes(node)
 
         semTypes = {}
         for gsn in goodSemTypeNodes:
             semType = {}
-            FrameNet.loadXMLAttributes(semType, gsn.attributes)
+            loadXMLAttributes(semType, gsn.attributes)
             semTypes[semType['ID']] = semType
 
         self['semtypes'] = semTypes

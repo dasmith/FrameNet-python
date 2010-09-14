@@ -1,3 +1,4 @@
+from framenet import loadXMLAttributes, getNoneTextChildNodes
 
 class LexicalUnit(dict):
     """
@@ -205,7 +206,7 @@ class LexicalUnit(dict):
 
         sent = {}
         try:
-            sent = FrameNet.loadXMLAttributes(sent, sentNode.attributes)
+            sent = loadXMLAttributes(sent, sentNode.attributes)
         except:
             print >> sys.stderr, 'Uanble to get one of ID or aPos'
             return False
@@ -252,7 +253,7 @@ class LexicalUnit(dict):
             for l in labels:
                 ll = {}
 
-                ll = FrameNet.loadXMLAttributes(ll, l.attributes)
+                ll = loadXMLAttributes(ll, l.attributes)
                         
                 layer['labels'][ll['ID']] = ll
 
