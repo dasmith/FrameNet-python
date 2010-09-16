@@ -161,9 +161,10 @@ class FrameNet(dict):
         lexicalUnitsIndexByName = {}
         for _f in os.listdir(baseDir):
             if _f.lower().startswith('lu') and _f.lower().endswith('.xml'):
-                print >> sys.stderr, 'Loading:', _f, '...',
+                print >> sys.stderr, 'Loading:', _f, ": ",
                 lu = LexicalUnit()
                 lu.loadXML(baseDir + '/' + _f)
+                print >> sys.stderr, lu['name'], '...', 
                 print >> sys.stderr, 'done'
 
                 if lexicalUnitsIndexByName.has_key(lu['name']):

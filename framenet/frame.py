@@ -172,6 +172,8 @@ class Frame(dict):
                 for gsn in goodSemTypeNodes:
                     lexeme = {}
                     loadXMLAttributes(lexeme, gsn.attributes)
+                    # store the actual word
+                    lexeme['lexeme'] = gsn.childNodes[0].nodeValue
                     lexemes[lexeme['ID']] = lexeme
                 lexunit['lexeme'] = lexemes
             elif gn.nodeName == 'semTypes':

@@ -1,6 +1,6 @@
 import os.path
 import cPickle
-import xml 
+import xml, sys
 import xml.dom.minidom
 
 from framenet import loadXMLAttributes, getNoneTextChildNodes
@@ -52,12 +52,16 @@ class LexicalUnit(dict):
         for node in goodNodes:
             if node.nodeName == 'definition':
                 if not self.loadDefinition(goodNodes[0]):
-                    print >> sys.stderr, 'Failed to load the definition node for document:', fileName
+                    print >> sys.stderr, '> Failed to load the definition node for document:', fileName
                     return False
             elif node.nodeName == 'subcorpus':
                 if not self.loadSubcorpus(node):
-                    print >> sys.stderr, 'Failed to load the subcorpus No.' + str(i)
+                    print >> sys.stderr, '> Failed to load the subcorpus node for document:', fileName
                     return False
+            elif node.nodeName == 'lexemes':
+                if not self.loadLexemes(node):
+                    print >> sys.stderr, '> Failed to load the lexemes node for document:', fileName
+                    return False  
         return True
 
 
@@ -70,7 +74,7 @@ class LexicalUnit(dict):
         if doc.attributes.has_key('ID'):
             self['ID'] = int(doc.attributes['ID'].value)
         else:
-            print >> sys.stderr, 'Unable to load the ID node'
+            print >> sys.stderr, '>> Unable to load the ID node'
             return False
 
         # Load the HeadWord
@@ -78,28 +82,28 @@ class LexicalUnit(dict):
             n = doc.attributes['name'].value
             self['name'] = str(n)
         else:
-            print >> sys.stderr, 'Unable to load the name'
+            print >> sys.stderr, '>> Unable to load the name'
             return False
 
         # Load the POS
         if doc.attributes.has_key('pos'):
             self['pos'] = str(doc.attributes['pos'].value)
         else:
-            print >> sys.stderr, 'Unable to load the POS'
+            print >> sys.stderr, '>> Unable to load the POS'
             return False
 
         # Load the frame
         if doc.attributes.has_key('frame'):
             self['frame'] = str(doc.attributes['frame'].value)
         else:
-            print >> sys.stderr, 'Unable to load the frame'
+            print >> sys.stderr, '>> Unable to load the frame'
             return False
 
         # Load the incorporatedFE
         if doc.attributes.has_key('incorporatedFE'):
             self['incorporatedFE'] = str(doc.attributes['incorporatedFE'].value)
         else:
-            print >> sys.stderr, 'Unable to load the incorporatedFE'
+            print >> sys.stderr, '>> Unable to load the incorporatedFE'
             return False
 
         return True
@@ -113,11 +117,53 @@ class LexicalUnit(dict):
             try:
                 self['definition'] = defNode.childNodes[0].nodeValue
             except:
-                print >> sys.stderr, 'Unable to load the definition node of:', defNode
+                print >> sys.stderr, '>> Unable to load the definition node of:', defNode
                 return False
         return True
 
 
+    def loadLexemes(self, lexemeNodes):
+        """
+        Loads the lexemes
+        """
+        
+        lexemeChildNodes = filter(lambda x:x.nodeType != x.TEXT_NODE, lexemeNodes.childNodes)
+        
+        # initialize default list
+        self['lexemes'] = []
+            
+        for lexemeNode in lexemeChildNodes:
+            lexeme = {}
+            try:
+                lexeme['lexeme'] = lexemeNode.childNodes[0].nodeValue
+            except:
+                print >> sys.stderr, '>> Unable to load the lexemeNode lexeme:', lexemeNode
+                return False
+            try:
+                lexeme['ID'] = int(lexemeNode.attributes['ID'].value)
+            except:
+                print >> sys.stderr, '>> Unable to read the lexemeNode id'
+                return False
+            try:
+                lexeme['pos'] = str(lexemeNode.attributes['pos'].value)
+            except:
+                print >> sys.stderr, '>> Unable to read the lexemeNode pos'
+                return False
+            try:
+                lexeme['breakBefore'] = bool(lexemeNode.attributes['breakBefore'].value)
+            except:
+                print >> sys.stderr, '>> Unable to read the lexemeNode breakBefore'
+                return False
+            try:
+                lexeme['headword'] = bool(lexemeNode.attributes['headword'].value)
+            except:
+                print >> sys.stderr, '>> Unable to read the lexemeNode headword'
+                return False  
+            self['lexemes'].append(lexeme)        
+        
+        return True
+        
+            
     def loadSubcorpus(self, subCorpusNode):
         """
         Loads the subcorpus node
