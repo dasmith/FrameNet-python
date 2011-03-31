@@ -23,15 +23,23 @@ class LexicalUnit(dict):
         self['definition'] = None
         self['frame'] = None
         self['incorporatedFE'] = None
-
+        
+        self['lexemes'] = []
         self['subcorpora'] = {}
 
         self['annotationSets'] = {}
 
         self['layers'] = {}
 
-        pass
-
+    
+    def getLexemes(self,pos=None):
+        """ Returns a list of the tokens that evoke this lexical unit, given
+        an optional pos tag to filter the lexemes by. """
+        lex = {}
+        for l in self['lexemes']:
+            if pos != None and l['pos'] != pos: continue
+            lex[l['lexeme']] = l        
+        return lex
 
     def loadXML(self, fileName):
         """
@@ -172,7 +180,7 @@ class LexicalUnit(dict):
         try:
             corpusName = str(subCorpusNode.attributes['name'].value)
         except:
-            print >> sys.stderr, 'Unable to load the name of the subcorpus node', 
+            print >> sys.stderr, '>> Unable to load the name of the subcorpus node', 
             return False
 
         self['subcorpora'][corpusName] = {}
@@ -181,7 +189,7 @@ class LexicalUnit(dict):
 
         for annoNode in annotationNodes:
             if not self.loadAnnotationSet(annoNode, corpusName):
-                print >> sys.stderr, 'Unable to load an annotation set'
+                print >> sys.stderr, '>> Unable to load an annotation set'
                 return False
         return True
 
@@ -194,13 +202,13 @@ class LexicalUnit(dict):
         try:
             annotation['ID'] = int(annoNode.attributes['ID'].value)
         except:
-            print >> sys.stderr, 'Unable to read the annoNode id'
+            print >> sys.stderr, '>>> Unable to read the annoNode id'
             return False
 
         try:
             annotation['status'] = str(annoNode.attributes['status'].value)
         except:
-            print >> sys.stderr, 'Unable to read the annoNode status'
+            print >> sys.stderr, '>>> Unable to read the annoNode status'
             return False
 
         goodNodes = filter(lambda x:x.nodeType != x.TEXT_NODE, annoNode.childNodes)
@@ -208,13 +216,13 @@ class LexicalUnit(dict):
         for node in goodNodes:
             if node.nodeName == 'layers':
                 if annotation.has_key('layers'):
-                    print >> sys.stderr, 'Already has a Layers key!'
+                    print >> sys.stderr, '>>>> Already has a Layers key!'
                     return False
                 elif not self.loadLayers(node, annotation):
                     return False
             elif node.nodeName == 'sentence':
                 if annotation.has_key('sentence'):
-                    print >> sys.stderr, 'Already has a sentences key!'
+                    print >> sys.stderr, '>>>> Already has a sentences key!'
                     return False
                 elif not self.loadSentence(node, annotation):
                     return False
@@ -236,7 +244,7 @@ class LexicalUnit(dict):
             loaded = self.loadSingleLayer(layer)
 
             if loaded == None:
-                print >> sys.stderr, 'Unable to load a layer!'
+                print >> sys.stderr, '>>> Unable to load a layer!'
                 return False
             singleLayers[loaded['ID']] = loaded
 
@@ -252,20 +260,20 @@ class LexicalUnit(dict):
         goodNodes = filter(lambda x:x.nodeType != x.TEXT_NODE, sentNode.childNodes)
 
         if len(goodNodes) != 1:
-            print >> sys.stderr, 'Sent node has:', len(goodNodes), 'good nodes'
+            print >> sys.stderr, '>> Sent node has:', len(goodNodes), 'good nodes'
             return False
 
         sent = {}
         try:
             sent = loadXMLAttributes(sent, sentNode.attributes)
         except:
-            print >> sys.stderr, 'Uanble to get one of ID or aPos'
+            print >> sys.stderr, '>> Unable to get one of ID or aPos'
             return False
         
         sent['text'] = goodNodes[0].childNodes[0].nodeValue
 
         if not isinstance(sent['text'], unicode):
-            print >> sys.stderr, 'Unable to get the sentence text from', goodNodes[0].childNodes[0]
+            print >> sys.stderr, '>> Unable to get the sentence text from', goodNodes[0].childNodes[0]
             return False
 
         try:
@@ -288,13 +296,13 @@ class LexicalUnit(dict):
             layer['ID'] = int(layerNode.attributes['ID'].value)
             layer['name'] = str(layerNode.attributes['name'].value)
         except:
-            print >> sys.stderr, 'Unable to load layer id or name'
+            print >> sys.stderr, '>> Unable to load layer id or name'
             return None
 
         labelsNode = filter(lambda x:x.nodeType != x.TEXT_NODE, layerNode.childNodes)
 
         if len(labelsNode) > 1:
-            print >> sys.stderr, 'Got more than one labels node for a layer'
+            print >> sys.stderr, '>> Got more than one labels node for a layer'
             print >> sys.stderr, labelsNode
             return None
 
@@ -310,5 +318,3 @@ class LexicalUnit(dict):
 
         self['layers'][layer['ID']] = layer
         return layer
-
-#----------------------------------------------------------------------------

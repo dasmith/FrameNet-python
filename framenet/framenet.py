@@ -24,16 +24,12 @@ def getNoneTextChildNodes(xmlNode):
 def testLU(fileName):
     a = LexicalUnit()
 
-    if False:
-        if not a.loadXML(fileName):
+    try:
+        if not a.loadXML(FRAMENET_PATH+"/"+LU_DIR_ENV+"/"+fileName):
             print >> sys.stderr, 'loading:', fileName, 'failed'
-        print a
-    else:
-        try:
-            if not a.loadXML(fileName):
-                print >> sys.stderr, 'loading:', fileName, 'failed'
-        except:
-            print >> sys.stderr, 'loading:', fileName, 'failed'
+    except:
+        print >> sys.stderr, 'loading:', fileName, 'failed'
+    print a.getLexemes()
     return a
 
 
@@ -243,6 +239,32 @@ class FrameNet(dict):
 
         self['luCache'][w] = objects
         return objects
+
+    def getFrameGraph(self, frameText):
+        import networkx as nx
+        frame = self.lookupFrame(frameText)
+        g = nx.DiGraph()
+        frame_ids = frame.keys()
+        for relations in self['frameRelations']['relation-types'].values():
+            relationName = relations['name']
+            superFrameName = relations['superFrameName']
+            childFrameName = relations['subFrameName']
+            rels = relations['frame-relations']
+            print "Loading", relationName, superFrameName, childFrameName
+            for frame_id in frame_ids:
+                if True:
+                #for k,rel in rels.items():
+                    for k2, rel2 in rels.items():
+                        if rel2['subFrameName'] == frame['name']:
+                            print rel2
+                    
+                        if rel2['ID'] == frame_id:
+                            print "MATCH ON ID"
+                            print rel2['subFrameName']
+                        if int(rel2['subId']) == frame_id:
+                            print rel2
+                        elif int(rel2['supId']) == frame_id:
+                            print rel2
 
 
     def lookupFrame(self, frame):

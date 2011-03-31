@@ -1,5 +1,5 @@
 #!/bin/env python
-import framenet
+from framenet import *
 
 
 print "Testing framenet import"
@@ -9,5 +9,9 @@ print "Printing fn's methods"
 
 print dir(fn)
 
-buy = fn.lookupLexicalUnit('buy','v')
+buy = fn.lookupLexicalUnit('buy','v') 
 print buy 
+
+cb = fn.lookupFrame('Commerce_buy')
+
+fg = fn.getFrameGraph('Commerce_buy')
