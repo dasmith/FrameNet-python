@@ -1,0 +1,9 @@
+Module contents
+=================
+
+.. automodule:: framenetlib
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
